@@ -9,9 +9,9 @@ namespace MusicLife.Domain.Entities
     public class UserFavourite
     {
         public Guid UserId { get; set; }
-        public User? User { get; set; }
+        public virtual User? User { get; set; }
         public Guid SongId { get; set; }
-        public Song? Song { get; set; }
+        public virtual Song? Song { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

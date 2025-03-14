@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,6 @@ namespace MusicLife.Domain.Entities
         public string ImagePath{ get; set; }="";
         public int Followers { get; set; } = 0;
         public string About { get; set; } = "";
-        [JsonIgnore]
-        public virtual List<Song>? Songs { get; set; }  
+        public virtual IEnumerable<Song>? Songs { get; set; }  
     }
 }

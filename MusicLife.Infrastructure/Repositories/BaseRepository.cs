@@ -1,101 +1,98 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MusicLife.Application.IRepositories;
+using MusicLife.Domain.Commons;
 using MusicLife.Infrastructure;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MusicApi.Infracstructure.Repositories
 {
-    public abstract class BaseRepository<T> :IBaseRepository<T> where T : class
+    public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         protected readonly DataContext _context;
         protected readonly DbSet<T> _dbSet;
-        protected BaseRepository(DataContext context){
+        protected BaseRepository(DataContext context)
+        {
             _context = context;
-            _dbSet=_context.Set<T>();
+            _dbSet = _context.Set<T>();
         }
-        public virtual async Task<IEnumerable<T>> GetAll()
-        {
-            return await _dbSet.ToListAsync();
-        }
-        public async Task<IEnumerable<T>> GetAllPaged(int? page, int? pageSize,params Expression<Func<T, object>>[] includes)
-        {
-            var query = _dbSet.AsQueryable().ApplyIncludes(includes);
-            if(page.HasValue && pageSize.HasValue)
-            {
-                return await query.Skip((page.Value - 1) * pageSize.Value)
-                           .Take(pageSize.Value)
-                            .ToListAsync();
-            }
-            return await query.ToListAsync();
-        }
-        public virtual async Task AddAsynch(T entity)
+
+        public void Add(T entity)
         {
             _dbSet.Add(entity);
-            await _context.SaveChangesAsync();
         }
-        public virtual async Task<T?> GetByIdAsynch(object id) => await _dbSet.FindAsync(id);
-        public T? GetById(object id) =>  _dbSet.Find(id);
-        public virtual async Task<T?> FirstOrDefaultAsynch(Expression<Func<T,bool>> where)
-            => await _dbSet.FirstOrDefaultAsync(where);
-        public virtual async Task<IEnumerable<T>> GetMany(Expression<Func<T, bool>> where) 
-            =>await _dbSet.Where(where).ToListAsync();
 
-        public async Task<IEnumerable<T>> GetManyWithIncludes(Expression<Func<T, bool>> where, Expression<Func<T, object>> include)
+        public void Delete(T entity)
         {
-           return await _dbSet.Where(where).Include(include).ToListAsync();
+            _dbSet.Remove(entity);
         }
-        public virtual async Task UpdateAsynch(T entity)
+
+        public void Update(T entity)
         {
-            _dbSet.Attach(entity);
-            _dbSet.Entry(entity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            _dbSet.Update(entity);
         }
-        public virtual async Task Delete(T @object)
+        public Task<bool> ExistAsync(Expression<Func<T, bool>>[] expression)
         {
-              _dbSet.Remove(@object);
-              await _context.SaveChangesAsync();
+            return _dbSet.AsNoTracking().ApplyFilter(expression).AnyAsync();
         }
-        public virtual async Task DeleteMany(Expression<Func<T, bool>> where)
+
+        public Task<List<T>> GetAllAsync(List<Expression<Func<T, bool>>>? expressions = null, params Expression<Func<T, object>>[] includes)
         {
-            var objs=_dbSet.Where(where).AsEnumerable();
-            foreach (var obj in objs)
+            var query = _dbSet.AsNoTracking();
+            if (expressions != null)
             {
-                _dbSet.Remove(obj);
+                query.ApplyFilter(expressions.ToArray());
             }
-            await _context.SaveChangesAsync();
-        }
-        public async Task<bool> Any(Expression<Func<T, bool>> where)
-        {
-            return await _dbSet.AnyAsync(where);
+            return query.ApplyInclude(includes).ToListAsync();
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllWithIncludes(Expression<Func<T, object>> includes)
+        public async Task<T?> GetByIdAsync(Guid id)
         {
-            var query=_dbSet.AsQueryable().ApplyIncludes(includes);
-            return await query.ToListAsync();
-        }
-        public virtual async Task<T?> FirstOrDefaultWithIncludes(Expression<Func<T,bool>> where, Expression<Func<T, object>> includes)
-        {
-            IQueryable<T> query =_dbSet.AsQueryable().ApplyIncludes(includes);
-            return await query.FirstOrDefaultAsync(where);
+            return await _dbSet.FindAsync(id);
         }
 
+        public Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>>[] expressions, params Expression<Func<T, object>>[] includes)
+        {
+            
+            return _dbSet.ApplyFilter(expressions)
+                .ApplyInclude(includes)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<(List<T>, int)> GetPaginationAsync(PaginationParam<T> param)
+        {
+            var query = _dbSet.AsNoTracking()
+                .ApplyFilter(param.Expressions)
+                .ApplyInclude(param.Includes)
+                .ApplyOrderBy(param.OrderBy);
+            var totalCount=await query.CountAsync();
+            query.ApplyPaginate(param.Page, param.PageSize);
+            return (await query.ToListAsync(), totalCount);
+        }
     }
-    internal static class RepositoryExtensions
+    internal static class ExternalRepository
     {
-        public static IQueryable<T> ApplyIncludes<T>(this IQueryable<T> query, params Expression<Func<T, object>>[] includes) where T : class
+        public static IQueryable<T> ApplyInclude<T>(this IQueryable<T> query, Expression<Func<T,object>>[] includes) where T : class
         {
-            if (includes != null)
-            {
-                query = includes.Aggregate(query, (current, include) => current.Include(include));
-            }
-            return query;
+            return includes == null ? query : includes.Aggregate(query, (current,include)=>current.Include(include));
+        }
+        public static IQueryable<T> ApplyFilter<T>(this IQueryable<T> query, Expression<Func<T,bool>>[] expressions) 
+        {
+            return expressions == null ? query :
+                expressions.Aggregate(query,(current, expression)=>current.Where(expression));
+        }
+        public static IQueryable<T> ApplyOrderBy<T>(this IQueryable<T> query, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy)
+        {
+            return orderBy == null ? query : orderBy(query);
+        }
+        public static IQueryable<T> ApplyPaginate<T>(this IQueryable<T> query, int page, int pageSize)
+        {
+            return query.Skip((page - 1) * pageSize).Take(pageSize);
         }
     }
 }

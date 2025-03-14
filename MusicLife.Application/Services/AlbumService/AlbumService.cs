@@ -1,4 +1,4 @@
-﻿
+﻿using AutoMapper;
 using MusicLife.Application.Dtos;
 using MusicLife.Application.IRepositories;
 using MusicLife.Domain.Entities;
@@ -23,7 +23,7 @@ namespace MusicLife.Application.Services.AlbumService
         public async Task<Album> CreatAlbum(AlbumDTO albumDTO)
         {
             Album album = _mapper.Map<Album>(albumDTO);
-            album.ImagePath = await _fileHelper.UploadFileImage(albumDTO.ImageFile);
+            //album.ImagePath = await _fileHelper.UploadFileImage(albumDTO.ImageFile);
             albumDTO.SongIDs.ForEach(songID =>
             {
                 Song song =_songRepository.GetById(songID)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MusicLife.Infrastructure.Configurations
 {
-    public class CloundinarySetting
+    public sealed class CloudinarySetting
     {
         public string? CloudName { get; set; }
         public string? ApiKey { get; set; }

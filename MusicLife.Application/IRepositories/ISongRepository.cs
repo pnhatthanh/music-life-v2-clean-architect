@@ -10,6 +10,5 @@ namespace MusicLife.Application.IRepositories
 {
     public interface ISongRepository : IBaseRepository<Song>
     {
-        public new Task<IEnumerable<Song>> GetAllPaged(int? page, int? pageSize, params Expression<Func<Song, object>>[] includes);
     }
 }

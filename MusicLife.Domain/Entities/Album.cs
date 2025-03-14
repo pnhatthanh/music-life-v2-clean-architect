@@ -17,7 +17,6 @@ namespace MusicLife.Domain.Entities
         public string Description { get; set; } = "";
         public int NumberOfSong { get; set; } = 0;
         public DateTime CreatedTime { get; set; }=DateTime.Now;
-        [JsonIgnore]
-        public List<AlbumSong> AlbumSongs { get; set; } = new List<AlbumSong>();
+        public virtual IEnumerable<AlbumSong> AlbumSongs { get; set; } = new List<AlbumSong>();
     }
 }

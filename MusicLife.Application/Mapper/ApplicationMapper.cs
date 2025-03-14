@@ -7,7 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicLife.Infrastructure.Mapper
+
+namespace MusicLife.Application.Mapper
 {
     public class ApplicationMapper:Profile
     {

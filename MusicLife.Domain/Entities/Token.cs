@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,6 @@ namespace MusicLife.Domain.Entities
         public long CreatedAt { get; set; }
         public bool IsRevoked {  get; set; }
         public Guid userId { get; set; }
-        [ForeignKey("userId")]
         public virtual User? User { get; set; }
     }
 }

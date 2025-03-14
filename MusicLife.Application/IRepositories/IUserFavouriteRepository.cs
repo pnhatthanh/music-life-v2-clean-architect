@@ -11,6 +11,6 @@ namespace MusicLife.Application.IRepositories
     {
         Task<IEnumerable<Song?>> GetSongs(Guid userId, int page, int pageSize);
         Task<bool> IsSongFavourite(Guid? userId, Guid songId);
-        Task<int> QuantityFavouriteSong(Guid userId);
+        Task<int> CountFavouriteSong(Guid userId);
     }
 }

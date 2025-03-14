@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MusicLife.Application.ExternalServices
 {
-    public interface ICloundinaryService
+    public interface ICloudinaryService
     {
         Task<string> UploadFileImage(IFormFile fileImage);
         Task<string> UploadFileAudio(IFormFile fileAudio);

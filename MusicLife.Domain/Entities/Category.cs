@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,6 @@ namespace MusicLife.Domain.Entities
         [Key]
         public int CategoryId { get; set; }
         public string CategoryName { get; set; } = "";
-        public List<Song> song { get; set; } = new List<Song>();
+        public virtual IEnumerable<Song> songs { get; set; } = new List<Song>();
     }
 }
