@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using MusicApi.Infracstructure.Repositories;
 using MusicLife.Application.ExternalServices;
 using MusicLife.Application.IRepositories;
 using MusicLife.Infrastructure.Configurations;
 using MusicLife.Infrastructure.ExternalServices;
+using StackExchange.Redis;
 namespace MusicLife.Infrastructure
 {
     public static class DependencyInjection
@@ -27,9 +29,17 @@ namespace MusicLife.Infrastructure
             //Configuration
             services.Configure<CloudinarySetting>(configuration.GetSection("CloudinarySetting"));
             services.Configure<RedisSetting>(configuration.GetSection("RedisSetting"));
+
             //External services
+            var redisSetting = configuration.GetSection("RedisSetting").Get<RedisSetting>();
+            if (redisSetting !=null && redisSetting.Enable == true)
+            {
+                services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(redisSetting.ConnectionString!));
+                services.AddStackExchangeRedisCache(option => option.Configuration = redisSetting.ConnectionString);
+                services.AddScoped<ICacheService, CacheService>();
+            }      
             services.AddScoped<ICloudinaryService, CloudinaryService>();
-            services.AddScoped<ICacheService, CacheService>();
+           
 
 
             return services;

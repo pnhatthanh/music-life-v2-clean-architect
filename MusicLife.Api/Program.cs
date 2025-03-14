@@ -1,6 +1,7 @@
 using MusicLife.Api.Middlewares;
 using MusicLife.Application;
 using MusicLife.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
