@@ -13,22 +13,19 @@ namespace MusicApi.Infracstructure.Repositories
     public class UserFavouriteRepository(DataContext context)
         : BaseRepository<UserFavourite>(context), IUserFavouriteRepository
     {
-        public async Task<IEnumerable<Song?>> GetSongs(Guid userId, int page, int pageSize)
+        public Task<int> CountFavouriteSong(Guid userId)
         {
-            var songs=await _dbSet.Include(u=>u.Song).ThenInclude(s=>s!.artist)
-                .Where(u=>u.UserId== userId).OrderByDescending(u=>u.CreatedAt)
-                .Skip((page-1)*pageSize)
-                .Take(pageSize)
-                .Select(u=>u.Song).ToListAsync();
-            return songs;
+            throw new NotImplementedException();
         }
-        public async Task<int> QuantityFavouriteSong(Guid userId)
+
+        public Task<IEnumerable<Song?>> GetSongs(Guid userId, int page, int pageSize)
         {
-            return await _dbSet.Where(u=>u.UserId==userId).CountAsync();
+            throw new NotImplementedException();
         }
-        public async Task<bool> IsSongFavourite(Guid? userId, Guid songId)
+
+        public Task<bool> IsSongFavourite(Guid? userId, Guid songId)
         {
-            return await _dbSet.AnyAsync(u => u.UserId == userId && u.SongId == songId);
+            throw new NotImplementedException();
         }
     }
 }

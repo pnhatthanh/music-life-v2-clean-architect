@@ -22,7 +22,7 @@ namespace MusicLife.Infrastructure
             services.AddScoped<IArtistRepository, ArtistRepository>();
             services.AddScoped<IPlayListRepository, PlayListRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IAlbumSongRepository, AlbumSongRepository>();
+           // services.AddScoped<IAlbumSongRepository, AlbumSongRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();  
             services.AddScoped<IUserFavouriteRepository,UserFavouriteRepository>();
 
@@ -39,9 +39,6 @@ namespace MusicLife.Infrastructure
                 services.AddScoped<ICacheService, CacheService>();
             }      
             services.AddScoped<ICloudinaryService, CloudinaryService>();
-           
-
-
             return services;
         }
     }
