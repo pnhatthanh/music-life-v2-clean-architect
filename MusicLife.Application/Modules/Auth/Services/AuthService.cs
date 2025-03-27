@@ -7,6 +7,7 @@ using MusicLife.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,7 +28,10 @@ namespace MusicLife.Application.Modules.Auth.Services
         }
         public async Task<TokenResponseDTO> LoginAsync(LoginDTO req)
         {
-            var user = await _userRepository.FirstOrDefaultAsync()
+            var user = await _userRepository.FirstOrDefaultAsync(
+                    expressions: u => u.UserName == req.Email,
+                    includes:  u=>u.Role!
+                )
                 ?? throw new NotFoundException("Incorrect username or password");
             if (!BCrypt.Net.BCrypt.Verify(req.Password, user.Password))
             {
@@ -39,7 +43,7 @@ namespace MusicLife.Application.Modules.Auth.Services
                 RefereshToken= tokenResponse.RefereshToken,
                 CreatedAt=DateTimeOffset.Now.ToUnixTimeSeconds(),
                 IsRevoked=false,
-                userId=user.Id
+                userId=user.UserId
             };
             _tokenRepository.Add(refereshToken);
             await _unitOfWork.SaveChangesAsync();
@@ -51,21 +55,24 @@ namespace MusicLife.Application.Modules.Auth.Services
         }
         public async Task LogoutAsync(RefereshTokenDTO token)
         {
-            var refereshToken = await _tokenRepository.FirstOrDefaultAsynch(t => t.RefereshToken == token.RefereshToken) 
-                ?? throw new Exception("Invalid token");
+            var refereshToken = await _tokenRepository.FirstOrDefaultAsync(t=>t.RefereshToken==token.RefereshToken) 
+                ?? throw new NotFoundException("Invalid token");
             _tokenRepository.Delete(refereshToken);
             await _unitOfWork.SaveChangesAsync();
         }
         public async Task<TokenResponseDTO> VerifyAndGenerateTokenAsync(RefereshTokenDTO token)
         {
-            var _token = await _tokenRepository.FirstOrDefaultAsynch(t => t.RefereshToken == refereshToken)
-                        ?? throw new Exception("Token invalid");
+            var _token = await _tokenRepository.FirstOrDefaultAsync(t => t.RefereshToken == token.RefereshToken)
+                        ?? throw new NotFoundException("Invalid token");
             if (_token.IsRevoked == true || _token.ExpirationTime < DateTimeOffset.Now.ToUnixTimeSeconds())
             {
                 throw new BadRequestException("Token is expired");
             }
             _tokenRepository.Delete(_token);
-            var user = await _userRepository.FirstOrDefaultWithIncludes(u => u.UserId == token.userId, u => u.Role!)
+            var user = await _userRepository.FirstOrDefaultAsync(
+                    expressions: u=>u.UserId==_token.userId,
+                    includes: u=>u.Role!
+                    )
                        ?? throw new Exception("User not found");
             var tokenResponse = JwtUtil.GenerateAccessAndRefereshToken(user, _config);
             var refereshToken = new Token
@@ -73,7 +80,7 @@ namespace MusicLife.Application.Modules.Auth.Services
                 RefereshToken = tokenResponse.RefereshToken,
                 CreatedAt = DateTimeOffset.Now.ToUnixTimeSeconds(),
                 IsRevoked = false,
-                userId = user.Id
+                userId = user.UserId
             };
             _tokenRepository.Add(refereshToken);
             await _unitOfWork.SaveChangesAsync();

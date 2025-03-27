@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using MusicLife.Application.Common;
 using MusicLife.Application.Modules.Auth.DTOs;
+using MusicLife.Application.Params;
 using MusicLife.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ namespace MusicLife.Application.Utils
         {
             return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         }
-        private static string GenerateToken(IEnumerable<Claim> claims, DateTime expires, JwtParams _jwtSetting)
+        private static string GenerateToken(IEnumerable<Claim> claims, DateTime expires, JwtParam _jwtSetting)
         {
             var securityKey = GetSymmetricSecurityKey(_jwtSetting.SecurityKey);
             var tokenOption = new JwtSecurityToken(
@@ -39,7 +39,7 @@ namespace MusicLife.Application.Utils
                 new Claim(ClaimTypes.Role, user.Role!.RoleName),
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
             };
-            var jwtSetting = new JwtParams(config);
+            var jwtSetting = new JwtParam(config);
             var accessTokenExpired = DateTime.UtcNow.AddMinutes(jwtSetting.AccessTokenExpiration);
             var refershTokenExpired = DateTime.UtcNow.AddMinutes(jwtSetting.RefereshTokenExpiration);
             return new TokenResponseDTO
@@ -50,7 +50,7 @@ namespace MusicLife.Application.Utils
         }
         public static TokenValidationParameters ValidateToken(IConfiguration jwtSetting)
         {
-            var _jwtSetting=new JwtParams(jwtSetting);
+            var _jwtSetting=new JwtParam(jwtSetting);
             return new TokenValidationParameters
             {
                 IssuerSigningKey = GetSymmetricSecurityKey(_jwtSetting.SecurityKey),

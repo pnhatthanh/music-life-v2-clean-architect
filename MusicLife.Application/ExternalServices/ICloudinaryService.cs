@@ -9,9 +9,9 @@ namespace MusicLife.Application.ExternalServices
 {
     public interface ICloudinaryService
     {
-        Task<string> UploadFileImage(IFormFile fileImage);
-        Task<string> UploadFileAudio(IFormFile fileAudio);
-        Task DeleteImageFile(string fileName);
-        Task DeleteAudioFile(string fileName);
+        Task<string> UploadFileImageAsync(IFormFile fileImage);
+        Task<string> UploadFileAudioAsync(IFormFile fileAudio);
+        Task DeleteImageFileAsync(string fileName);
+        Task DeleteAudioFileAsync(string fileName);
     }
 }

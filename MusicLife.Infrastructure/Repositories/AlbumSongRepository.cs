@@ -11,7 +11,14 @@ using System.Threading.Tasks;
 namespace MusicApi.Infracstructure.Repositories
 {
     public class AlbumSongRepository(DataContext context)
-        : BaseRepository<DataContext>(context)/*, IAlbumSongRepository*/
+        : BaseRepository<AlbumSong>(context), IAlbumSongRepository
     {
+        public async Task<IEnumerable<Song>> GetSongsOfAlbum(Guid idAlbum)
+        {
+            var songs = await _dbSet.Include(albumSong => albumSong.Song)
+                .ThenInclude(song => song!.Artist)
+                .Where(albumSong => albumSong.AlbumId == idAlbum).Select(albumSong => albumSong.Song).ToListAsync();
+            return songs;
+        }
     }
 }

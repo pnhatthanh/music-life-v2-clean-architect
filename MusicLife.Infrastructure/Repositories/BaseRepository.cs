@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MusicLife.Application.IRepositories;
-using MusicLife.Domain.Commons;
+using MusicLife.Application.Params;
 using MusicLife.Infrastructure;
 using System;
 using System.Collections;
@@ -36,17 +36,17 @@ namespace MusicApi.Infracstructure.Repositories
         {
             _dbSet.Update(entity);
         }
-        public Task<bool> ExistAsync(Expression<Func<T, bool>>[] expression)
+        public Task<bool> ExistAsync(Expression<Func<T, bool>> expression)
         {
             return _dbSet.AsNoTracking().ApplyFilter(expression).AnyAsync();
         }
 
-        public Task<List<T>> GetAllAsync(List<Expression<Func<T, bool>>>? expressions = null, params Expression<Func<T, object>>[] includes)
+        public Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? expressions, params Expression<Func<T, object>>[] includes)
         {
             var query = _dbSet.AsNoTracking();
             if (expressions != null)
             {
-                query.ApplyFilter(expressions.ToArray());
+                query.ApplyFilter(expressions);
             }
             return query.ApplyInclude(includes).ToListAsync();
         }
@@ -56,18 +56,18 @@ namespace MusicApi.Infracstructure.Repositories
             return await _dbSet.FindAsync(id);
         }
 
-        public Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>>[] expressions, params Expression<Func<T, object>>[] includes)
+        public  Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes)
         {
             
-            return _dbSet.ApplyFilter(expressions)
+            return _dbSet.ApplyFilter(expression)
                 .ApplyInclude(includes)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<(List<T>, int)> GetPaginationAsync(PaginationParam<T> param)
+        public async Task<(IEnumerable<T>, int)> GetPaginationAsync(PaginationParam<T> param)
         {
             var query = _dbSet.AsNoTracking()
-                .ApplyFilter(param.Expressions)
+                .ApplyFilter(param.Expression)
                 .ApplyInclude(param.Includes)
                 .ApplyOrderBy(param.OrderBy);
             var totalCount=await query.CountAsync();
@@ -81,10 +81,9 @@ namespace MusicApi.Infracstructure.Repositories
         {
             return includes == null ? query : includes.Aggregate(query, (current,include)=>current.Include(include));
         }
-        public static IQueryable<T> ApplyFilter<T>(this IQueryable<T> query, Expression<Func<T,bool>>[] expressions) 
+        public static IQueryable<T> ApplyFilter<T>(this IQueryable<T> query, Expression<Func<T,bool>> expression) 
         {
-            return expressions == null ? query :
-                expressions.Aggregate(query,(current, expression)=>current.Where(expression));
+            return expression == null ? query : query.Where(expression);
         }
         public static IQueryable<T> ApplyOrderBy<T>(this IQueryable<T> query, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy)
         {

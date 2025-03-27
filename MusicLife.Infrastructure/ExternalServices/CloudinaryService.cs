@@ -24,7 +24,7 @@ namespace MusicLife.Infrastructure.ExternalServices
                 options.Value.ApiSecret);
             _cloudinary = new Cloudinary(account);
         }  
-        public async Task DeleteAudioFile(string fileName)
+        public async Task DeleteAudioFileAsync(string fileName)
         {
             var uri = new Uri(fileName);
             var segments = uri.Segments;
@@ -36,7 +36,7 @@ namespace MusicLife.Infrastructure.ExternalServices
             await _cloudinary.DestroyAsync(deleteParams);
         }
 
-        public async Task DeleteImageFile(string fileName)
+        public async Task DeleteImageFileAsync(string fileName)
         {
             var uri = new Uri(fileName);
             var segments = uri.Segments;
@@ -45,7 +45,7 @@ namespace MusicLife.Infrastructure.ExternalServices
             await _cloudinary.DestroyAsync(deleteParams);
         }
 
-        public async Task<string> UploadFileAudio(IFormFile fileAudio)
+        public async Task<string> UploadFileAudioAsync(IFormFile fileAudio)
         {
             if (fileAudio.Length == 0)
             {
@@ -71,7 +71,7 @@ namespace MusicLife.Infrastructure.ExternalServices
             return uploadResult.SecureUrl.ToString();
         }
 
-        public async Task<string> UploadFileImage(IFormFile fileImage)
+        public async Task<string> UploadFileImageAsync(IFormFile fileImage)
         {
             if (fileImage.Length == 0)
             {

@@ -17,4 +17,15 @@
     <ProjectReference Include="..\MusicLife.Domain\MusicLife.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Modules\M_Artist\DTOs\" />
+    <Folder Include="Modules\M_Artist\Services\" />
+    <Folder Include="Modules\M_PlayList\DTOs\" />
+    <Folder Include="Modules\M_PlayList\Services\" />
+    <Folder Include="Modules\M_Song\DTOs\" />
+    <Folder Include="Modules\M_Song\Services\" />
+    <Folder Include="Modules\M_User\DTOs\" />
+    <Folder Include="Modules\M_User\Services\" />
+  </ItemGroup>
+
 </Project>

@@ -9,6 +9,6 @@ namespace MusicLife.Application.IRepositories
 {
     public interface IAlbumSongRepository : IBaseRepository<AlbumSong>
     {
-        Task<IEnumerable<Song?>> GetSongs(Guid idAlbum);
+        Task<IEnumerable<Song>> GetSongsOfAlbum(Guid idAlbum);
     }
 }

@@ -5,11 +5,11 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicLife.Domain.Commons
+namespace MusicLife.Application.Params
 {
     public class PaginationParam<T> where T : class
     {
-        public int Page {  get; set; }
+        public int Page { get; set; }
         public int PageSize { get; set; }
         public Expression<Func<T, bool>> Expression { get; set; } = null!;
         public Expression<Func<T, object>>[] Includes { get; set; } = null!;

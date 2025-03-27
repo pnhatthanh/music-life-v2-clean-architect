@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MusicLife.Application.Dtos;
+using MusicLife.Application.Modules.M_Album.DTOs;
 using MusicLife.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,8 @@ namespace MusicLife.Application.Mapper
     {
         public ApplicationMapper() 
         {
-            CreateMap<Album, AlbumDTO>().ReverseMap();
+            CreateMap<Album, CreateAlbumDTO>().ReverseMap();
+            CreateMap<Album, AlbumDTO>();
             CreateMap<Artist, ArtistDTO>().ReverseMap();
             CreateMap<PlayList, PlayListDTO>().ReverseMap();
             CreateMap<Song, SongDTO>().ReverseMap();

@@ -1,4 +1,4 @@
-﻿using MusicLife.Domain.Commons;
+﻿using MusicLife.Application.Params;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +13,11 @@ namespace MusicLife.Application.IRepositories
         void Add(T entity);
         void Delete(T entity);
         void Update(T entity);
-        Task<List<T>> GetAllAsync(List<Expression<Func<T, bool>>>? expressions = null, params Expression<Func<T, object>>[] includes);
-        Task<(List<T>, int)> GetPaginationAsync(PaginationParam<T> param);
-        Task<bool> ExistAsync(Expression<Func<T, bool>>[] expression);
+        Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? expressions, params Expression<Func<T, object>>[] includes);
+        Task<(IEnumerable<T>, int)> GetPaginationAsync(PaginationParam<T> param);
+        Task<bool> ExistAsync(Expression<Func<T, bool>>? expression);
         Task<T?> GetByIdAsync(Guid id);
-        Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>>[] expressions, params Expression<Func<T, object>>[] includes);
+        Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>>? expressions, params Expression<Func<T, object>>[] includes);
        
     }
 }
