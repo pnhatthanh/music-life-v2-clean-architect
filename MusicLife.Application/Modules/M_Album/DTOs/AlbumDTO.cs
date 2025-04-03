@@ -8,7 +8,7 @@ namespace MusicLife.Application.Modules.M_Album.DTOs
 {
     public class AlbumDTO
     {
-        public Guid AlbumId { get; set; } = Guid.NewGuid();
+        public Guid AlbumId { get; set; }
         public string AlbumName { get; set; } = "";
         public string ImagePath { get; set; } = "";
         public string Description { get; set; } = "";

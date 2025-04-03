@@ -15,7 +15,7 @@ namespace MusicLife.Application.Modules.M_Album.Services
         Task<AlbumDTO> CreatAlbumAsync(CreateAlbumDTO albumDTO);
         Task DeleteAlbumAsync(Guid id);
         Task<AlbumDTO> UpdateAlbumAsync(Guid id, UpdateAlbumDTO album);
-        Task<IEnumerable<SongResponse>> GetAllSongOfAlbumAsync(Guid id);
+        //Task<IEnumerable<SongResponse>> GetAllSongOfAlbumAsync(Guid id);
         Task AddSongToAlbumAsync(Guid idAlbum, Guid idSong);
         Task<bool> IsExist(Guid idAlbum);
     }

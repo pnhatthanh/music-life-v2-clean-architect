@@ -98,12 +98,12 @@ namespace MusicLife.Application.Modules.M_Album.Services
            return (_mapper.Map<IEnumerable<AlbumDTO>>(albums), totalItem);
         }
 
-        public async Task<IEnumerable<SongResponse>> GetAllSongOfAlbumAsync(Guid id)
-        {
-            var songs =await _albumSongRepository.GetSongsOfAlbum(id)
-                    ?? throw new NotFoundException("Not found");
-            return _mapper.Map<IEnumerable<SongResponse>>(songs); 
-        }
+        //public async Task<IEnumerable<SongResponse>> GetAllSongOfAlbumAsync(Guid id)
+        //{
+        //    var songs =await _albumSongRepository.GetSongsOfAlbum(id)
+        //            ?? throw new NotFoundException("Not found");
+        //    return _mapper.Map<IEnumerable<SongResponse>>(songs); 
+        //}
 
         public async Task<bool> IsExist(Guid idAlbum)
         {
@@ -115,6 +115,11 @@ namespace MusicLife.Application.Modules.M_Album.Services
             var album = await _albumRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException("Not found album");
             _mapper.Map(albumDTO, album);
+            if(albumDTO.ImageFile != null)
+            {
+                await _cloudinaryService.DeleteImageFileAsync(album.ImagePath);
+                album.ImagePath = await _cloudinaryService.UploadFileImageAsync(albumDTO.ImageFile);
+            }
             _albumRepository.Update(album);
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<AlbumDTO>(album);

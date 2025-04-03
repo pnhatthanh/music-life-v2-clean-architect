@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MusicLife.Application.Modules.M_Artist.DTOs;
 
 namespace MusicLife.Application.Dtos
 {
@@ -14,7 +15,7 @@ namespace MusicLife.Application.Dtos
         public string SongPath { get; set; } = "";
         public int ListenCount { get; set; }
         public int Duration { get; set; }
-        public ArtistResponse? artist { get; set; }
+        public ArtistDTO? artist { get; set; }
         public bool IsFavourite { get; set; }
     }
 }

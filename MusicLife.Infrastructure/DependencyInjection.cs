@@ -17,12 +17,13 @@ namespace MusicLife.Infrastructure
             //repository
             services.AddDbContext<DataContext>
                 (option => option.UseSqlServer(configuration["ConnectionStrings:SQLServer"]));
+
             services.AddScoped<IAlbumRepository,AlbumRepository>();
             services.AddScoped<ISongRepository, SongRepository>();
             services.AddScoped<IArtistRepository, ArtistRepository>();
             services.AddScoped<IPlayListRepository, PlayListRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-           // services.AddScoped<IAlbumSongRepository, AlbumSongRepository>();
+            services.AddScoped<IAlbumSongRepository, AlbumSongRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();  
             services.AddScoped<IUserFavouriteRepository,UserFavouriteRepository>();
 

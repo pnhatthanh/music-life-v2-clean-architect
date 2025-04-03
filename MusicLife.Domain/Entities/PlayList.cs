@@ -16,6 +16,6 @@ namespace MusicLife.Domain.Entities
         public int NumberOfSong { get; set; } = 0;
         public Guid UserId { get; set; }
         public virtual User? User { get; set; }
-        public IEnumerable<Song> Songs{ get; set; } =new List<Song>();
+        public virtual IEnumerable<Song> Songs{ get; set; } =new List<Song>();
     }
 }
