@@ -10,10 +10,10 @@ namespace MusicLife.Application.Modules.M_PlayList.Services
 {
     public interface IPlayListService
     {
-        Task<(IEnumerable<PlayListDTO>, int)> GetPlayListsAsync(Guid userId);
+        Task<IEnumerable<PlayListDTO>> GetPlayListsAsync(Guid userId);
         Task<PlayListDTO> GetPlayListByIdAsync(Guid id, Guid userId);
         Task<PlayListDTO> CreatePlayListAsync(CreatePlayListDTO playListDTO, Guid userId);
-        Task<PlayListDTO> DeletePlayListAsync(Guid id, Guid userId);
+        Task DeletePlayListAsync(Guid id, Guid userId);
         Task<PlayListDTO> UpdatePlayListAsync(Guid id, Guid userId, UpdatePlayListDTO playListDTO);
         //Task<IEnumerable<SongResponse>> GetSongs(Guid playlistId);
         Task AddSongAsync(Guid idPlayList, Guid idSong, Guid userId);

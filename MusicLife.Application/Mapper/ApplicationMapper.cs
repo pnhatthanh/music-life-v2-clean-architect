@@ -18,12 +18,14 @@ namespace MusicLife.Application.Mapper
         public ApplicationMapper() 
         {
             CreateMap<Album, CreateAlbumDTO>().ReverseMap();
-            CreateMap<Album, AlbumDTO>();
             CreateMap<Artist, CreateArtistDTO>().ReverseMap();
             CreateMap<PlayList, CreatePlayListDTO>().ReverseMap();
+            CreateMap<UpdatePlayListDTO, PlayList>();
             CreateMap<Song, SongDTO>().ReverseMap();
             CreateMap<User, UserDTO>().ReverseMap();
 
+            CreateMap<Album, AlbumDTO>();
+            CreateMap<PlayList, PlayListDTO>();
             CreateMap<Song, SongResponse>();
             CreateMap<Artist, ArtistDTO>();
             CreateMap<Album, SongResponse>();

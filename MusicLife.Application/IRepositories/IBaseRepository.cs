@@ -13,7 +13,7 @@ namespace MusicLife.Application.IRepositories
         void Add(T entity);
         void Delete(T entity);
         void Update(T entity);
-        Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? expressions, params Expression<Func<T, object>>[] includes);
+        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? expressions, params Expression<Func<T, object>>[] includes);
         Task<(IEnumerable<T>, int)> GetPaginationAsync(PaginationParam<T> param);
         Task<bool> ExistAsync(Expression<Func<T, bool>>? expression);
         Task<T?> GetByIdAsync(Guid id);

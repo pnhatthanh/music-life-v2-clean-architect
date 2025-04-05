@@ -41,14 +41,14 @@ namespace MusicApi.Infracstructure.Repositories
             return _dbSet.AsNoTracking().ApplyFilter(expression).AnyAsync();
         }
 
-        public Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? expressions, params Expression<Func<T, object>>[] includes)
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? expressions, params Expression<Func<T, object>>[] includes)
         {
             var query = _dbSet.AsNoTracking();
             if (expressions != null)
             {
                 query.ApplyFilter(expressions);
             }
-            return query.ApplyInclude(includes).ToListAsync();
+            return await query.ApplyInclude(includes).ToListAsync();
         }
 
         public async Task<T?> GetByIdAsync(Guid id)
