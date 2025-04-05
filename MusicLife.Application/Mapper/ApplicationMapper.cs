@@ -3,6 +3,7 @@ using MusicLife.Application.Dtos;
 using MusicLife.Application.Modules.M_Album.DTOs;
 using MusicLife.Application.Modules.M_Artist.DTOs;
 using MusicLife.Application.Modules.M_PlayList.DTOs;
+using MusicLife.Application.Modules.M_Song.DTOs;
 using MusicLife.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -21,14 +22,15 @@ namespace MusicLife.Application.Mapper
             CreateMap<Artist, CreateArtistDTO>().ReverseMap();
             CreateMap<PlayList, CreatePlayListDTO>().ReverseMap();
             CreateMap<UpdatePlayListDTO, PlayList>();
-            CreateMap<Song, SongDTO>().ReverseMap();
-            CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<CreateSongDTO, Song>();
+            CreateMap<UpdateSongDTO, Song>();
+            CreateMap<User, UserDTO>();
 
             CreateMap<Album, AlbumDTO>();
             CreateMap<PlayList, PlayListDTO>();
-            CreateMap<Song, SongResponse>();
+            CreateMap<Song, SongDTO>();
             CreateMap<Artist, ArtistDTO>();
-            CreateMap<Album, SongResponse>();
+            CreateMap<Album, SongDTO>();
         }
     }
 }

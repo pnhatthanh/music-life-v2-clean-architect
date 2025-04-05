@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using MusicLife.Application.Modules.M_Artist.DTOs;
 
-namespace MusicLife.Application.Dtos
+namespace MusicLife.Application.Modules.M_Song.DTOs
 {
-    public class SongResponse
+    public class SongDTO
     {
         public Guid SongId { get; set; }
         public string SongName { get; set; } = "";

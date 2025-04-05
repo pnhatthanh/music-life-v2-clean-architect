@@ -7,6 +7,7 @@ using MusicLife.Application.ExternalServices;
 using MusicLife.Application.IRepositories;
 using MusicLife.Infrastructure.Configurations;
 using MusicLife.Infrastructure.ExternalServices;
+using MusicLife.Infrastructure.Repositories;
 using StackExchange.Redis;
 namespace MusicLife.Infrastructure
 {
@@ -26,6 +27,7 @@ namespace MusicLife.Infrastructure
             services.AddScoped<IAlbumSongRepository, AlbumSongRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();  
             services.AddScoped<IUserFavouriteRepository,UserFavouriteRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             //Configuration
             services.Configure<CloudinarySetting>(configuration.GetSection("CloudinarySetting"));

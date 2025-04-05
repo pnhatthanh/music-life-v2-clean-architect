@@ -13,19 +13,5 @@ namespace MusicApi.Infracstructure.Repositories
     public class UserFavouriteRepository(DataContext context)
         : BaseRepository<UserFavourite>(context), IUserFavouriteRepository
     {
-        public Task<int> CountFavouriteSong(Guid userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Song?>> GetSongs(Guid userId, int page, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> IsSongFavourite(Guid? userId, Guid songId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

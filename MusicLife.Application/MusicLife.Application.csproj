@@ -18,8 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\M_Song\DTOs\" />
-    <Folder Include="Modules\M_Song\Services\" />
     <Folder Include="Modules\M_User\DTOs\" />
     <Folder Include="Modules\M_User\Services\" />
   </ItemGroup>

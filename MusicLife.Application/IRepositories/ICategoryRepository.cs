@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MusicLife.Application.IRepositories
 {
-    public interface IUserFavouriteRepository : IBaseRepository<UserFavourite>
+    public interface ICategoryRepository : IBaseRepository<Category>
     {
     }
 }
