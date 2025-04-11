@@ -13,9 +13,5 @@ namespace MusicApi.Infracstructure.Repositories
     internal class PlayListRepository(DataContext context)
         : BaseRepository<PlayList>(context), IPlayListRepository
     {
-        public Task<IEnumerable<Song>> GetSong(Guid playlistId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

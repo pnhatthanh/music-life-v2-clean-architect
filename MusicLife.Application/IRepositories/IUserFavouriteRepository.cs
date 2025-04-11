@@ -1,4 +1,5 @@
-﻿using MusicLife.Domain.Entities;
+﻿using MusicLife.Application.Modules.M_Song.DTOs;
+using MusicLife.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

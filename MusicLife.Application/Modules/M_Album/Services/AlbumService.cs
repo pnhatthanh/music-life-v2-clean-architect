@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using MusicLife.Application.Dtos;
 using MusicLife.Application.Exceptions;
 using MusicLife.Application.ExternalServices;
 using MusicLife.Application.IRepositories;
 using MusicLife.Application.Modules.M_Album.DTOs;
+using MusicLife.Application.Modules.M_Song.DTOs;
 using MusicLife.Application.Params;
 using MusicLife.Domain.Entities;
 using System;
@@ -98,12 +98,16 @@ namespace MusicLife.Application.Modules.M_Album.Services
            return (_mapper.Map<IEnumerable<AlbumDTO>>(albums), totalItem);
         }
 
-        //public async Task<IEnumerable<SongResponse>> GetAllSongOfAlbumAsync(Guid id)
-        //{
-        //    var songs =await _albumSongRepository.GetSongsOfAlbum(id)
-        //            ?? throw new NotFoundException("Not found");
-        //    return _mapper.Map<IEnumerable<SongResponse>>(songs); 
-        //}
+        public async Task<IEnumerable<SongDTO>> GetAllSongOfAlbumAsync(Guid albumId)
+        {
+            var albumSongs = await _albumSongRepository.GetAllAsync(a=>a.AlbumId== albumId)
+                                ?? throw new NotFoundException();
+            var songIds = albumSongs.Select(x => x.SongId);
+            var songs = await _songRepository.GetAllAsync(
+                                expressions: song => songIds.Contains(song.SongId),
+                                includes: song => song.Artist!);
+            return _mapper.Map<IEnumerable<SongDTO>>(songs);
+        }
 
         public async Task<bool> IsExist(Guid idAlbum)
         {

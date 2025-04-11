@@ -16,6 +16,12 @@ namespace MusicLife.Application.Modules.M_Song.Services
         Task<SongDTO> CreatSongAsync(CreateSongDTO songDTO);
         Task DeleteSongAsync(Guid id);
         Task<SongDTO> UpdateSongAsync(Guid id, UpdateSongDTO song);
-       Task<IEnumerable<SongDTO>> GetSongByNameAsync(string title);
+        Task<IEnumerable<SongDTO>> GetSongByNameAsync(string title);
+
+        //Favourite songs
+        Task<SongDTO> AddSongToFavouritesAsync(Guid idSong, Guid userId);
+        Task<(IEnumerable<SongDTO>, int)> GetFavouriteSongsAsync(Guid userId, int? page, int? pageSize);
+        Task RemoveSongFavouriteAsync(Guid idSong, Guid userId);
+
     }
 }

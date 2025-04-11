@@ -3,6 +3,7 @@ using MusicLife.Application.Exceptions;
 using MusicLife.Application.ExternalServices;
 using MusicLife.Application.IRepositories;
 using MusicLife.Application.Modules.M_Artist.DTOs;
+using MusicLife.Application.Modules.M_Song.DTOs;
 using MusicLife.Application.Params;
 using MusicLife.Domain.Entities;
 using System;
@@ -15,16 +16,18 @@ namespace MusicLife.Application.Modules.M_Artist.Services
 {
     public class ArtistService : IArtistService
     {
-        private IArtistRepository _artistRepository;
-        private IUnitOfWork _unitOfWork;
+        private readonly IArtistRepository _artistRepository;
+        private readonly ISongRepository _songRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ICloudinaryService _cloudinaryService;
-        public ArtistService(IArtistRepository artistRepository, IUnitOfWork unitOfWork, IMapper mapper, ICloudinaryService cloudinaryService)
+        public ArtistService(IArtistRepository artistRepository, ISongRepository songRepository, IUnitOfWork unitOfWork, IMapper mapper, ICloudinaryService cloudinaryService)
         {
             _artistRepository = artistRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _cloudinaryService = cloudinaryService;
+            _songRepository = songRepository;
         }
 
         public async Task<ArtistDTO> CreateArtistAsync(CreateArtistDTO artistDTO)
@@ -84,6 +87,20 @@ namespace MusicLife.Application.Modules.M_Artist.Services
             _artistRepository.Update(artist);
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<ArtistDTO>(artist);
+        }
+
+        public async Task<(IEnumerable<SongDTO>, int)> GetAllSongsAsync(int? page, int? pageSize, Guid artistId)
+        {
+            PaginationParam<Song> param = new PaginationParam<Song>
+            {
+                Page = page ?? 1,
+                PageSize = pageSize ?? 15,
+                OrderBy = song => song.OrderByDescending(x => x.ListenCount),
+                Expression = song=>song.ArtistId== artistId,
+                Includes = [song=> song.Artist!]
+            };
+            var (songs, total) = await _songRepository.GetPaginationAsync(param);
+            return (_mapper.Map<IEnumerable<SongDTO>>(songs), total);
         }
     }
 }

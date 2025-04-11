@@ -2,6 +2,7 @@
 using MusicLife.Application.Exceptions;
 using MusicLife.Application.IRepositories;
 using MusicLife.Application.Modules.M_PlayList.DTOs;
+using MusicLife.Application.Modules.M_Song.DTOs;
 using MusicLife.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -78,6 +79,15 @@ namespace MusicLife.Application.Modules.M_PlayList.Services
         {
             var playList = await _playListRepository.GetAllAsync(playList => playList.UserId == userId);
             return _mapper.Map<IEnumerable<PlayListDTO>>(playList);
+        }
+
+        public async Task<IEnumerable<SongDTO>> GetSongsAsync(Guid playlistId)
+        {
+            var playlist =await _playListRepository.FirstOrDefaultAsync(
+                                expressions: playList => playList.PlayListId == playlistId,
+                                includes: playList => playList.Songs
+                            ) ??  throw new NotFoundException();
+            return _mapper.Map<IEnumerable<SongDTO>>(playlist.Songs);
         }
 
         public async Task RemoveSongAsync(Guid idPlayList, Guid idSong, Guid userId)

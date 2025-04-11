@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 namespace MusicLife.Application.IRepositories
 {
     public interface IPlayListRepository : IBaseRepository<PlayList>
-    {
-        public Task<IEnumerable<Song>> GetSong(Guid playlistId);
+    { 
     }
 }

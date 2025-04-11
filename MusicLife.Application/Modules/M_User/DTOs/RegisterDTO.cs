@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MusicLife.Application.Dtos
+namespace MusicLife.Application.Modules.M_User.DTOs
 {
     public class RegisterDTO
     {

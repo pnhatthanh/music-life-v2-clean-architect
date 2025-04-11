@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using MusicLife.Application.Dtos;
 using MusicLife.Application.Modules.M_Album.DTOs;
 using MusicLife.Application.Modules.M_Artist.DTOs;
 using MusicLife.Application.Modules.M_PlayList.DTOs;
 using MusicLife.Application.Modules.M_Song.DTOs;
+using MusicLife.Application.Modules.M_User.DTOs;
 using MusicLife.Domain.Entities;
 using System;
 using System.Collections.Generic;

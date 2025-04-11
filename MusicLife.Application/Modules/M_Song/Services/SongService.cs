@@ -21,17 +21,19 @@ namespace MusicLife.Application.Modules.M_Song.Services
         private readonly IArtistRepository _artistRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUserFavouriteRepository _userFavouriteRepository;
+        private readonly IUserRepository _userRepository;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public SongService(ISongRepository songRepository, IArtistRepository artistRepository, ICategoryRepository categoryRepository,IUserFavouriteRepository userFavouriteRepository,
+        public SongService(ISongRepository songRepository, IArtistRepository artistRepository, ICategoryRepository categoryRepository,IUserFavouriteRepository userFavouriteRepository, IUserRepository userRepository,
                             ICloudinaryService cloudinaryService, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _songRepository = songRepository;
             _artistRepository = artistRepository;
             _categoryRepository = categoryRepository;
             _userFavouriteRepository = userFavouriteRepository;
+            _userRepository = userRepository;
             _cloudinaryService = cloudinaryService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -106,7 +108,6 @@ namespace MusicLife.Application.Modules.M_Song.Services
             var (songs, totalSongs) = await _songRepository.GetPaginationAsync(parameter);
             return (_mapper.Map<IEnumerable<SongDTO>>(songs), totalSongs);
         }
-
         public async Task<SongDTO> UpdateSongAsync(Guid id, UpdateSongDTO songDTO)
         {
             var song = await _songRepository.GetByIdAsync(id)
@@ -126,5 +127,46 @@ namespace MusicLife.Application.Modules.M_Song.Services
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<SongDTO>(song);
         }
+        public async Task<(IEnumerable<SongDTO>, int)> GetFavouriteSongsAsync(Guid userId, int? page, int? pageSize)
+        {
+            PaginationParam<UserFavourite> param = new PaginationParam<UserFavourite>
+            {
+                Page = page ?? 1,
+                PageSize = pageSize ?? 15,
+                OrderBy = uf => uf.OrderByDescending(x => x.CreatedAt),
+                Expression = uf => uf.UserId == userId
+            };
+            var (records, total) = await _userFavouriteRepository.GetPaginationAsync(param);
+            var songIds=records.Select(x => x.SongId).ToList();
+            var songs = await _songRepository.GetAllAsync(
+                                        expressions: song => songIds.Contains(song.SongId),
+                                        includes: song => song.Artist!);
+            return (_mapper.Map<IEnumerable<SongDTO>>(songs), total);
+
+        }
+        public async Task<SongDTO> AddSongToFavouritesAsync(Guid songId, Guid userId)
+        {
+            bool isExist = await _userFavouriteRepository.ExistAsync(uf => uf.UserId == userId && uf.SongId == songId);
+            if (isExist)
+                throw new DuplicatedException();
+            Song song = await _songRepository.GetByIdAsync(songId) ?? throw new NotFoundException();
+            User user = await _userRepository.GetByIdAsync(userId) ?? throw new NotFoundException();
+            _userFavouriteRepository.Add(new UserFavourite
+            {
+                UserId = userId,
+                SongId = songId,
+            });
+            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<SongDTO>(song);
+        }
+        public async Task RemoveSongFavouriteAsync(Guid songId, Guid userId)
+        {
+            UserFavourite uf = await _userFavouriteRepository.FirstOrDefaultAsync(u=> u.UserId == userId && u.SongId==songId)
+                        ?? throw new NotFoundException();
+            _userFavouriteRepository.Delete(uf);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        
     }
 }
