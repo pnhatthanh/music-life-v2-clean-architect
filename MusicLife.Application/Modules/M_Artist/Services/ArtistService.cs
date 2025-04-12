@@ -74,7 +74,7 @@ namespace MusicLife.Application.Modules.M_Artist.Services
             return (_mapper.Map<IEnumerable<ArtistDTO>>(artists), totalArtist);
         }
 
-        public async Task<ArtistDTO> UpdateArtistAsync(Guid id, CreateArtistDTO artistDTO)
+        public async Task<ArtistDTO> UpdateArtistAsync(Guid id, UpdateArtistDTO artistDTO)
         {
             var artist =await _artistRepository.GetByIdAsync(id)
                 ?? throw new NotFoundException();

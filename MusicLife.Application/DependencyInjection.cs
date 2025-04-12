@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using MusicLife.Application.ExternalServices;
 using MusicLife.Application.Mapper;
+using MusicLife.Application.Modules.Auth.Services;
+using MusicLife.Application.Modules.CurrentUser;
+using MusicLife.Application.Modules.M_Album.Services;
+using MusicLife.Application.Modules.M_Artist.Services;
+using MusicLife.Application.Modules.M_PlayList.Services;
+using MusicLife.Application.Modules.M_Song.Services;
+using MusicLife.Application.Modules.M_User.Services;
 using MusicLife.Application.Utils;
 using System;
 using System.Collections.Generic;
@@ -36,7 +41,15 @@ namespace MusicLife.Application
                 option.AddPolicy("User", policy => policy.RequireRole("User"));
             });
 
+            services.AddScoped<IAuthService,AuthService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IAlbumService, AlbumService>();
+            services.AddScoped<IArtistService, ArtistService>();
+            services.AddScoped<IPlayListService, PlayListService>();
+            services.AddScoped<ISongService, SongService>();
+            services.AddScoped<IUserService, UserService>();
 
+            services.AddHttpContextAccessor();
             return services;
         }
     }

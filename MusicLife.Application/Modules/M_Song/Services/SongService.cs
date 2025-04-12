@@ -2,6 +2,7 @@
 using MusicLife.Application.Exceptions;
 using MusicLife.Application.ExternalServices;
 using MusicLife.Application.IRepositories;
+using MusicLife.Application.Modules.CurrentUser;
 using MusicLife.Application.Modules.M_Artist.DTOs;
 using MusicLife.Application.Modules.M_Song.DTOs;
 using MusicLife.Application.Params;
@@ -22,12 +23,13 @@ namespace MusicLife.Application.Modules.M_Song.Services
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUserFavouriteRepository _userFavouriteRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICurrentUserService _currentUserService;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         public SongService(ISongRepository songRepository, IArtistRepository artistRepository, ICategoryRepository categoryRepository,IUserFavouriteRepository userFavouriteRepository, IUserRepository userRepository,
-                            ICloudinaryService cloudinaryService, IUnitOfWork unitOfWork, IMapper mapper)
+                            ICurrentUserService currentUserService,ICloudinaryService cloudinaryService, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _songRepository = songRepository;
             _artistRepository = artistRepository;
@@ -35,11 +37,12 @@ namespace MusicLife.Application.Modules.M_Song.Services
             _userFavouriteRepository = userFavouriteRepository;
             _userRepository = userRepository;
             _cloudinaryService = cloudinaryService;
+            _currentUserService = currentUserService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<SongDTO> CreatSongAsync(CreateSongDTO songDTO)
+        public async Task<SongDTO> CreateSongAsync(CreateSongDTO songDTO)
         {
             if (!await _categoryRepository.ExistAsync(category => category.CategoryId == songDTO.CategoryId))
                 throw new NotFoundException("Category not found");
@@ -72,8 +75,9 @@ namespace MusicLife.Application.Modules.M_Song.Services
             return _mapper.Map<IEnumerable<SongDTO>>(sortedSong);
         }
 
-        public async Task<SongDTO> GetSongByIdAsync(Guid id, Guid? userId)
+        public async Task<SongDTO> GetSongByIdAsync(Guid id)
         {
+            var userId = _currentUserService.UserId;
             var song =await _songRepository.FirstOrDefaultAsync(
                     expressions: song=>song.SongId == id,
                     includes: song=> song.Artist!) ?? throw new NotFoundException();

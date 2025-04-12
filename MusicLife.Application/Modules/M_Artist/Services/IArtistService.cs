@@ -17,6 +17,6 @@ namespace MusicLife.Application.Modules.M_Artist.Services
         Task<ArtistDTO> GetArtistByIdAsync(Guid id);
         Task<ArtistDTO> CreateArtistAsync(CreateArtistDTO artistDTO);
         Task DeleteArtistAsync(Guid id);
-        Task<ArtistDTO> UpdateArtistAsync(Guid id, CreateArtistDTO artistDTO);
+        Task<ArtistDTO> UpdateArtistAsync(Guid id, UpdateArtistDTO artistDTO);
     }
 }

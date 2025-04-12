@@ -12,16 +12,16 @@ namespace MusicLife.Application.Modules.M_Song.Services
     {
         Task<(IEnumerable<SongDTO>, int)> GetSongsAsync(int? page, int? pageSize);
         Task<IEnumerable<SongDTO>> GetRecentlyPlayAsync(Guid[] idSongs);
-        Task<SongDTO> GetSongByIdAsync(Guid id, Guid? userId);
-        Task<SongDTO> CreatSongAsync(CreateSongDTO songDTO);
+        Task<SongDTO> GetSongByIdAsync(Guid id);
+        Task<SongDTO> CreateSongAsync(CreateSongDTO songDTO);
         Task DeleteSongAsync(Guid id);
         Task<SongDTO> UpdateSongAsync(Guid id, UpdateSongDTO song);
         Task<IEnumerable<SongDTO>> GetSongByNameAsync(string title);
 
         //Favourite songs
-        Task<SongDTO> AddSongToFavouritesAsync(Guid idSong, Guid userId);
-        Task<(IEnumerable<SongDTO>, int)> GetFavouriteSongsAsync(Guid userId, int? page, int? pageSize);
-        Task RemoveSongFavouriteAsync(Guid idSong, Guid userId);
+        Task<SongDTO> AddSongToFavouritesAsync(Guid idSong);
+        Task<(IEnumerable<SongDTO>, int)> GetFavouriteSongsAsync(int? page, int? pageSize);
+        Task RemoveSongFavouriteAsync(Guid idSong);
 
     }
 }
