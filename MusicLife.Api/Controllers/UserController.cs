@@ -5,7 +5,7 @@ using MusicLife.Application.Modules.M_User.Services;
 
 namespace MusicLife.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {

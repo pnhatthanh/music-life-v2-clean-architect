@@ -17,7 +17,7 @@ namespace MusicLife.Infrastructure
         {
             //repository
             services.AddDbContext<DataContext>
-                (option => option.UseSqlServer(configuration["ConnectionStrings:SQLServer"]));
+                (option => option.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IAlbumRepository,AlbumRepository>();
             services.AddScoped<ISongRepository, SongRepository>();
@@ -28,6 +28,7 @@ namespace MusicLife.Infrastructure
             services.AddScoped<ITokenRepository, TokenRepository>();  
             services.AddScoped<IUserFavouriteRepository,UserFavouriteRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IUnitOfWork,UnitOfWork>();
 
             //Configuration
             services.Configure<CloudinarySetting>(configuration.GetSection("CloudinarySetting"));

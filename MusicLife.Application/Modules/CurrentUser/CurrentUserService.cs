@@ -12,7 +12,7 @@ namespace MusicLife.Application.Modules.CurrentUser
     public class CurrentUserService : ICurrentUserService
     {
         private readonly IHttpContextAccessor _contextAccessor;
-        public CurrentUserService(HttpContextAccessor contextAccessor)
+        public CurrentUserService(IHttpContextAccessor contextAccessor)
         {
             _contextAccessor = contextAccessor;
         }

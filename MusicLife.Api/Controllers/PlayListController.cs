@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace MusicLife.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [Authorize(Roles = "User")]
     [ApiController]
     public class PlayListController : ControllerBase

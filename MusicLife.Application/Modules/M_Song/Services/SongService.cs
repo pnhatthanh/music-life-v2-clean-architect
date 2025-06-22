@@ -78,16 +78,16 @@ namespace MusicLife.Application.Modules.M_Song.Services
         public async Task<SongDTO> GetSongByIdAsync(Guid id)
         {
             var userId = _currentUserService.UserId;
+            bool isUserExist = await _userRepository.ExistAsync(user=>user.UserId.Equals(userId));
+            if (!isUserExist)
+                throw new NotFoundException();
             var song =await _songRepository.FirstOrDefaultAsync(
                     expressions: song=>song.SongId == id,
                     includes: song=> song.Artist!) ?? throw new NotFoundException();
             song.ListenCount++;
             _songRepository.Update(song);
             var songResponse= _mapper.Map<SongDTO>(song);
-            if (userId != null)
-            {
-                songResponse.IsFavourite = await _userFavouriteRepository.ExistAsync(us => us.UserId == userId && us.SongId == id);
-            }
+            songResponse.IsFavourite = await _userFavouriteRepository.ExistAsync(us => us.UserId == userId && us.SongId == id);
             await _unitOfWork.SaveChangesAsync();
             return songResponse;
         }
@@ -131,8 +131,12 @@ namespace MusicLife.Application.Modules.M_Song.Services
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<SongDTO>(song);
         }
-        public async Task<(IEnumerable<SongDTO>, int)> GetFavouriteSongsAsync(Guid userId, int? page, int? pageSize)
+        public async Task<(IEnumerable<SongDTO>, int)> GetFavouriteSongsAsync(int? page, int? pageSize)
         {
+            var userId=_currentUserService.UserId;
+            bool isUserExist = await _userRepository.ExistAsync(user => user.UserId.Equals(userId));
+            if (!isUserExist)
+                throw new NotFoundException();
             PaginationParam<UserFavourite> param = new PaginationParam<UserFavourite>
             {
                 Page = page ?? 1,
@@ -148,8 +152,12 @@ namespace MusicLife.Application.Modules.M_Song.Services
             return (_mapper.Map<IEnumerable<SongDTO>>(songs), total);
 
         }
-        public async Task<SongDTO> AddSongToFavouritesAsync(Guid songId, Guid userId)
+        public async Task<SongDTO> AddSongToFavouritesAsync(Guid songId)
         {
+            var userId= _currentUserService.UserId;
+            bool isUserExist = await _userRepository.ExistAsync(user => user.UserId.Equals(userId));
+            if (!isUserExist)
+                throw new NotFoundException();
             bool isExist = await _userFavouriteRepository.ExistAsync(uf => uf.UserId == userId && uf.SongId == songId);
             if (isExist)
                 throw new DuplicatedException();
@@ -163,8 +171,9 @@ namespace MusicLife.Application.Modules.M_Song.Services
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<SongDTO>(song);
         }
-        public async Task RemoveSongFavouriteAsync(Guid songId, Guid userId)
+        public async Task RemoveSongFavouriteAsync(Guid songId)
         {
+            var userId= _currentUserService.UserId;
             UserFavourite uf = await _userFavouriteRepository.FirstOrDefaultAsync(u=> u.UserId == userId && u.SongId==songId)
                         ?? throw new NotFoundException();
             _userFavouriteRepository.Delete(uf);

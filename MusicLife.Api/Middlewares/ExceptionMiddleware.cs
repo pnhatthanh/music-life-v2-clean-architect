@@ -22,7 +22,11 @@ namespace MusicLife.Api.Middlewares
             {
                 context.Response.StatusCode =(int) ex.StatusCode;
                 context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(JsonSerializer.Serialize(context.Response));
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new
+                {
+                    stausCode = ex.StatusCode,
+                    message=ex.Message,
+                }));
             }
             catch (Exception)
             {
