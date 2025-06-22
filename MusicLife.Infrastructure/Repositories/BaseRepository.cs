@@ -46,7 +46,7 @@ namespace MusicApi.Infracstructure.Repositories
             var query = _dbSet.AsNoTracking();
             if (expressions != null)
             {
-                query.ApplyFilter(expressions);
+                query=query.ApplyFilter(expressions);
             }
             return await query.ApplyInclude(includes).ToListAsync();
         }
@@ -71,7 +71,7 @@ namespace MusicApi.Infracstructure.Repositories
                 .ApplyInclude(param.Includes)
                 .ApplyOrderBy(param.OrderBy);
             var totalCount=await query.CountAsync();
-            query.ApplyPaginate(param.Page, param.PageSize);
+            query=query.ApplyPaginate(param.Page, param.PageSize);
             return (await query.ToListAsync(), totalCount);
         }
     }

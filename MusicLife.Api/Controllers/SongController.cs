@@ -26,7 +26,7 @@ namespace MusicLife.Api.Controllers
         public async Task<IActionResult> GetAllSongs([FromQuery] int? page, [FromQuery] int? pageSize)
         {
             var songs = await _songService.GetSongsAsync(page, pageSize);
-            return Ok(songs);
+            return Ok(songs.Item1);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSong(Guid id)
